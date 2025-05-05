@@ -8,17 +8,15 @@
 #define MAXSTACK 200
 #define MAXREPR 500
 
-typedef struct {
-    int rows, cols;
-    long long cost;    // 64-bit for safety
-    char repr[MAXREPR];
-} Node;
+/* Best solution for current instance */
+static long long bestCost;
+static char bestTree[MAXREPR];
 
 /* We'll store the current dimensions in d[] for the chain */
 static int d[MAXN+1];
 static int n; // number of matrices
 
-void solution(int size, int (*dp)[size], int (*split)[size], const int* d){
+void solution(int size, long long (*dp)[size], int (*split)[size], const int* d){
     // initialise dp[i][i] to 0
     for(int i = 0; i<size; i++){
         dp[i][i] = 0;
@@ -40,10 +38,10 @@ void solution(int size, int (*dp)[size], int (*split)[size], const int* d){
         int pas = j;
         for(int i = 0; i<size-j; i++){
             int column_index = j + i; // to go through the diagonal
-            int minimum = INT_MAX; // init minimum
+            long long minimum = LONG_MAX; // init minimum
             int k_minimum = INT_MAX; // init k-split minimum
             for(int k = 1; k <= pas; k++){
-                int tmp = dp[i][column_index-k] + dp[i+pas-k+1][column_index] + d[i] * d[column_index-k+1] * d[column_index+1];
+                long long tmp = dp[i][column_index-k] + dp[i+pas-k+1][column_index] + d[i] * d[column_index-k+1] * d[column_index+1];
                 if(tmp < minimum){
                     minimum = tmp;
                     k_minimum = column_index-k+1;
@@ -75,8 +73,8 @@ void init_matrix(int size, int (*tab)[size]){
 void print_solution(int size, int (*split)[size], int i, int j, char *buff){
     if(i < 0 || j < 0 || j < i) return;
     if(i == j){
-        char tmp[10];
-        snprintf(tmp, 10, "M%d", i+1);
+        char tmp[15];
+        snprintf(tmp, 15, "M%d", i+1);
         strcat(buff, tmp);
     }
     else{
@@ -91,34 +89,73 @@ void print_solution(int size, int (*split)[size], int i, int j, char *buff){
 #define N 16
 #define SIZE (N-1)
 
-int main(){
-    // test of the solution
-    int dimensions[N] = {64, 51, 20, 39, 33, 98, 52, 76, 68, 14, 97, 62, 42, 81, 72, 47};
-    int tab[SIZE][SIZE];
-    int split[SIZE][SIZE];
+int main(int argc, char *argv[]){
+    if (argc < 3) {
+        fprintf(stderr, "Usage: %s <inputFile> <outputFile>\n", argv[0]);
+        return 1;
+    }
+    const char *inFile  = argv[1];
+    const char *outFile = argv[2];
 
-    // Initialize tab and split matrices
-    init_matrix(SIZE, tab);
-    init_matrix(SIZE, split);
+    FILE *fin = fopen(inFile, "r");
+    if (!fin) {
+        fprintf(stderr, "Cannot open input file: %s\n", inFile);
+        return 1;
+    }
+    FILE *fout = fopen(outFile, "w");
+    if (!fout) {
+        fprintf(stderr, "Cannot open output file: %s\n", outFile);
+        fclose(fin);
+        return 1;
+    }
 
-    // Fill tab with the minimal cost and split with the K where we split
-    solution(SIZE, tab, split, dimensions);
+    // Read total number of instances T
+    int T;
+    fscanf(fin, "%d", &T);
 
-    // Printing the solutions we get
-    print_matrix(SIZE, tab);
-    printf("------------------\n");
-    print_matrix(SIZE, split);
+    // We'll solve each instance, measure time, and record results.
+    for (int inst = 0; inst < T; inst++) {
+        // read n
+        fscanf(fin, "%d", &n);
+        // read n+1 dimensions
+        for (int i = 0; i < n+1; i++) {
+            fscanf(fin, "%d", &d[i]);
+        }
 
-    // We will store the solution here
-    char sol[512];
-    sol[0] = '\0';
-    printf("%s\n", sol);
+        bestCost = LLONG_MAX;
+        bestTree[0] = '\0';
 
-    // Always start the call at the index [0, size-1] it means we will get
-    // where we have to split M1*M2*...*M(SIZE)
-    print_solution(SIZE, split, 0, SIZE-1, sol);
+        // init dp and split matrices
+        long long dp[n][n];
+        int split[n][n];
+        // init_matrix(n, dp);
+        init_matrix(n, split);
 
-    // printing the solution
-    printf("%s\n", sol);
+        // measure time
+        clock_t start = clock();
+        
+        // run dp solution and storing the best solution in bestTree
+        solution(n, dp, split, d);
+        print_solution(n, split, 0, n-1, bestTree);
+
+        clock_t end = clock();
+
+        bestCost = dp[0][n-1];
+
+
+        double timeSec = (double)(end - start) / CLOCKS_PER_SEC;
+
+        // Write result: n time bestCost bestTree
+        fprintf(fout, "%d %.6f %lld %s\n", n, timeSec, bestCost, bestTree);
+        fflush(fout);
+
+        // Print progress
+        printf("[Progress] Solved instance %d / %d : n=%d, time=%.6f, bestCost=%lld\n",
+               inst+1, T, n, timeSec, bestCost);
+    }
+
+    fclose(fin);
+    fclose(fout);
+    printf("Processed %d instances. Results saved to %s\n", T, outFile);
     return 0;
 }
