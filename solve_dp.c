@@ -65,16 +65,39 @@ void print_matrix(int size, int (*tab)[size]){
 }
 
 void init_matrix(int size, int (*tab)[size]){
-    for(int i = 0; i<4; i++){
-        for(int j = 0; j<4; j++){
+    for(int i = 0; i<size; i++){
+        for(int j = 0; j<size; j++){
             tab[i][j] = 0;
         }
     }
 }
 
+void print_solution(int size, int (*split)[size], int i, int j, char *buff){
+    if(i < 0 || j < 0 || j < i) return;
+    if(i == j){
+        char tmp[10];
+        snprintf(tmp, 10, "M%d", i+1);
+        strcat(buff, tmp);
+    }
+    else if(j == i+1 && split[i][j] == i+1){
+        char tmp[10];
+        snprintf(tmp, 10, "(M%d ", j);
+        strcat(buff, tmp);
+        snprintf(tmp, 10, "M%d)", j+1);
+        strcat(buff, tmp);
+    }
+    else{
+        strcat(buff, "(");
+        print_solution(size, split, i, split[i][j]-1, buff);
+        strcat(buff, " ");
+        print_solution(size, split, i+split[i][j], j, buff);
+        strcat(buff, ")");
+    }
+}
+
 int main(){
     // test of the solution
-    int ok[5] = {10, 100, 5, 50, 20};
+    int ok[5] = {58, 43, 46, 20, 86};
     int tab[4][4];
     int split[4][4];
 
@@ -87,6 +110,10 @@ int main(){
     printf("------------------\n");
     print_matrix(4, split);
     // it works ;)
-    
+    char buff[512];
+    buff[0] = '\0';
+    printf("%s\n", buff);
+    print_solution(4, split, 0, 3, buff);
+    printf("%s\n", buff);
     return 0;
 }
