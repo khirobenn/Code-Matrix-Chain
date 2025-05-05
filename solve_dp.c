@@ -79,41 +79,46 @@ void print_solution(int size, int (*split)[size], int i, int j, char *buff){
         snprintf(tmp, 10, "M%d", i+1);
         strcat(buff, tmp);
     }
-    else if(j == i+1 && split[i][j] == i+1){
-        char tmp[10];
-        snprintf(tmp, 10, "(M%d ", j);
-        strcat(buff, tmp);
-        snprintf(tmp, 10, "M%d)", j+1);
-        strcat(buff, tmp);
-    }
     else{
         strcat(buff, "(");
         print_solution(size, split, i, split[i][j]-1, buff);
         strcat(buff, " ");
-        print_solution(size, split, i+split[i][j], j, buff);
+        print_solution(size, split, split[i][j], j, buff);
         strcat(buff, ")");
     }
 }
 
+#define N 16
+#define SIZE (N-1)
+
 int main(){
     // test of the solution
-    int ok[5] = {58, 43, 46, 20, 86};
-    int tab[4][4];
-    int split[4][4];
+    int dimensions[N] = {64, 51, 20, 39, 33, 98, 52, 76, 68, 14, 97, 62, 42, 81, 72, 47};
+    int tab[SIZE][SIZE];
+    int split[SIZE][SIZE];
 
-    init_matrix(4, tab);
-    init_matrix(4, split);
+    // Initialize tab and split matrices
+    init_matrix(SIZE, tab);
+    init_matrix(SIZE, split);
 
-    solution(4, tab, split, ok);
+    // Fill tab with the minimal cost and split with the K where we split
+    solution(SIZE, tab, split, dimensions);
 
-    print_matrix(4, tab);
+    // Printing the solutions we get
+    print_matrix(SIZE, tab);
     printf("------------------\n");
-    print_matrix(4, split);
-    // it works ;)
-    char buff[512];
-    buff[0] = '\0';
-    printf("%s\n", buff);
-    print_solution(4, split, 0, 3, buff);
-    printf("%s\n", buff);
+    print_matrix(SIZE, split);
+
+    // We will store the solution here
+    char sol[512];
+    sol[0] = '\0';
+    printf("%s\n", sol);
+
+    // Always start the call at the index [0, size-1] it means we will get
+    // where we have to split M1*M2*...*M(SIZE)
+    print_solution(SIZE, split, 0, SIZE-1, sol);
+
+    // printing the solution
+    printf("%s\n", sol);
     return 0;
 }
