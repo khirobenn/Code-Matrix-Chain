@@ -24,14 +24,18 @@ void print_array(long long *ok, int size){
 }
 
 // Shrinking 
-void delete_the_iem_element(long long tab[], int index, int size){
+void delete_the_iem_element(long long tab[], int index, int size, char solution[][100]){
     for(int i = index; i < size-1; i++){
         tab[i] = tab[i+1];
+        sprintf(solution[i], "%s", solution[i+1]);
     }
 }
 
-long long greedy(int nb_of_matrices, long long ok[]){
+long long greedy(int nb_of_matrices, long long ok[], char solution[][100]){
     if(nb_of_matrices == 2){
+        char tmp[100];
+        sprintf(tmp, "(%s %s)", solution[0], solution[1]);
+        sprintf(solution[0], "%s", tmp);
         return ok[0] * ok[1] * ok[2];
     }
     
@@ -44,10 +48,11 @@ long long greedy(int nb_of_matrices, long long ok[]){
             index_to_delete = i;
         } 
     }
-
-    delete_the_iem_element(ok, index_to_delete, nb_of_matrices+1);
-    print_array(ok, nb_of_matrices);
-    return sum_of_greedy + greedy(nb_of_matrices-1, ok);
+    char tmp[100];
+    sprintf(tmp, "(%s %s)", solution[index_to_delete-1], solution[index_to_delete]);
+    sprintf(solution[index_to_delete-1], "%s", tmp);
+    delete_the_iem_element(ok, index_to_delete, nb_of_matrices+1, solution);
+    return sum_of_greedy + greedy(nb_of_matrices-1, ok, solution);
 }
 
 #define SIZE 5
@@ -56,7 +61,14 @@ long long greedy(int nb_of_matrices, long long ok[]){
 int main(int argc, char *argv[]){
     long long ok[] = {10, 100, 5, 50, 20};
     print_array(ok, SIZE);
-    printf("%lld\n", greedy(nb_matrices, ok));
+    char t[nb_matrices][100];
+    for(int  i = 0; i<nb_matrices; i++){
+        sprintf(t[i], "M%d", i+1);
+    }
+    
+    printf("%lld\n", greedy(nb_matrices, ok, t));
+    // t[0] will contain the solution after the call of greedy
+    printf("%s\n", t[0]);
 
     return 0;
 }
