@@ -33,19 +33,19 @@ void delete_the_iem_element(long long tab[], int index, int size, char solution[
 
 long long greedy(long long ok[], char solution[][100], int start, int end){
     if(end - start < 2){
-        // càd y'a une seule matrice, y'a pas de coût à calculer.
+        // it means there is only one matrix, there is no cost to calculate.
         return 0;
     }
     else if(end - start == 2){
-        // càd y'a deux matrices, y'a un coût à calculer.
+        // it means there is two matrices, so, there is a cost to calculate.
         char tmp[100];
         sprintf(tmp, "(%s %s)", solution[start], solution[start+1]);
         sprintf(solution[start], "%s", tmp);
         return ok[start] * ok[start+1] * ok[end];
     }
-    
-    // On cherche le minimum entre start et end
-    // Donc c'est pas la peine de faire la multiplication
+    // We are searching for a min between start and end
+    // We don't need a multiplication for that
+    // for example if a*x*c < a*y*c <=> x < y, such that numbers are greater than 0
     int index_to_delete = start+1;
     long long sum_of_greedy = ok[start+1];
     for(int i = start+2; i < end; i++){
@@ -56,13 +56,13 @@ long long greedy(long long ok[], char solution[][100], int start, int end){
     }
     sum_of_greedy *= ok[start];
     sum_of_greedy *= ok[end];
-    // à gauche
+    // left call
     long long b = greedy(ok, solution, start, index_to_delete);
-    // à droite
+    // right call
     long long c = greedy(ok, solution, index_to_delete, end);
 
-    // On concate les deux solutions, 
-    // on les mets dans solution[start] pour avoir la solution finale dans solution[0]
+    // We concatenate the two solutions of left and right
+    // We give it to solution[start] to have our final solution in solution[0]
     char tmp[100];
     sprintf(tmp, "(%s %s)", solution[start], solution[index_to_delete]);
     sprintf(solution[start], "%s", tmp);
@@ -74,8 +74,7 @@ long long greedy(long long ok[], char solution[][100], int start, int end){
 #define nb_matrices (SIZE-1)
 
 int main(int argc, char *argv[]){
-    // long long ok[] = {10, 100, 5, 50, 20};
-    long long ok[] = {5, 100, 3, 2, 50};
+    long long ok[] = {10, 100, 5, 50, 20};
     print_array(ok, SIZE);
     char t[nb_matrices][100];
     for(int  i = 0; i<nb_matrices; i++){
