@@ -16,13 +16,6 @@ static char bestTree[MAXREPR];
 static int d[MAXN+1];
 static int n; // number of matrices
 
-void print_array(long long *ok, int size){
-    for(int i = 0; i<size; i++){
-        printf("%d\t", ok[i]);
-    }
-    printf("\n");
-}
-
 // Shrinking 
 void delete_the_iem_element(int tab[], int index, int size, char solution[][100]){
     for(int i = index; i < size-1; i++){
@@ -91,7 +84,7 @@ int main(int argc, char *argv[]){
             fscanf(fin, "%d", &d[i]);
         }
         // solution is an array of strings to write M1, M2, ...
-        char solution[n][100];
+        char solution[n][MAXREPR];
         for(int  i = 0; i<n; i++){
             sprintf(solution[i], "M%d", i+1);
         }

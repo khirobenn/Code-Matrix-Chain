@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
             fscanf(fin, "%d", &d[i]);
         }
         // solution is an array of strings to write M1, M2, ...
-        char solution[n][100];
+        char solution[n][MAXREPR];
         for(int  i = 0; i<n; i++){
             sprintf(solution[i], "M%d", i+1);
         }
