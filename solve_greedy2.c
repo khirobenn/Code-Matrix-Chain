@@ -31,7 +31,7 @@ void delete_the_iem_element(long long tab[], int index, int size, char solution[
     }
 }
 
-long long greedy(int ok[], char solution[][100], int start, int end){
+long long greedy(int dimensions[], char solution[][100], int start, int end){
     if(end - start < 2){
         // it means there is only one matrix, there is no cost to calculate.
         return 0;
@@ -41,25 +41,25 @@ long long greedy(int ok[], char solution[][100], int start, int end){
         char tmp[100];
         sprintf(tmp, "(%s %s)", solution[start], solution[start+1]);
         sprintf(solution[start], "%s", tmp);
-        return ok[start] * ok[start+1] * ok[end];
+        return dimensions[start] * dimensions[start+1] * dimensions[end];
     }
     // We are searching for a min between start and end
     // We don't need a multiplication for that
     // for example if a*x*c < a*y*c <=> x < y, such that numbers are greater than 0
     int index_to_delete = start+1;
-    long long sum_of_greedy = ok[start+1];
+    long long sum_of_greedy = dimensions[start+1];
     for(int i = start+2; i < end; i++){
-        if(ok[i] < sum_of_greedy){
-            sum_of_greedy = ok[i];
+        if(dimensions[i] < sum_of_greedy){
+            sum_of_greedy = dimensions[i];
             index_to_delete = i;
         } 
     }
-    sum_of_greedy *= ok[start];
-    sum_of_greedy *= ok[end];
+    sum_of_greedy *= dimensions[start];
+    sum_of_greedy *= dimensions[end];
     // left call
-    long long b = greedy(ok, solution, start, index_to_delete);
+    long long b = greedy(dimensions, solution, start, index_to_delete);
     // right call
-    long long c = greedy(ok, solution, index_to_delete, end);
+    long long c = greedy(dimensions, solution, index_to_delete, end);
 
     // We concatenate the two solutions of left and right
     // We give it to solution[start] to have our final solution in solution[0]

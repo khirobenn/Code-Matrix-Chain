@@ -31,6 +31,8 @@ void delete_the_iem_element(int tab[], int index, int size, char solution[][100]
     }
 }
 
+// My greedy is to find the maximum dimension in the array of the dimensions
+// Calculate the cost and delete it and call the function again
 long long greedy(int nb_of_matrices, int dimensions[], char solution[][100]){
     if(nb_of_matrices == 2){
         char tmp[100];
@@ -40,15 +42,13 @@ long long greedy(int nb_of_matrices, int dimensions[], char solution[][100]){
     }
     
     int index_to_delete = 1;
-    long long sum_of_greedy = dimensions[0] * dimensions[1] * dimensions[2];
     for(int i = 2; i < nb_of_matrices; i++){
-        long long tmp_sum = dimensions[i-1] * dimensions[i] * dimensions[i+1];
-        if(tmp_sum < sum_of_greedy){
-            sum_of_greedy = tmp_sum;
+        if(dimensions[i] > dimensions[index_to_delete]){
             index_to_delete = i;
         } 
     }
-    char tmp[100];
+
+    long long sum_of_greedy = dimensions[index_to_delete-1] * dimensions[index_to_delete] * dimensions[index_to_delete+1];    char tmp[100];
     sprintf(tmp, "(%s %s)", solution[index_to_delete-1], solution[index_to_delete]);
     sprintf(solution[index_to_delete-1], "%s", tmp);
     delete_the_iem_element(dimensions, index_to_delete, nb_of_matrices+1, solution);
