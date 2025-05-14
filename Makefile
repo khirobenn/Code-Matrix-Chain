@@ -35,7 +35,7 @@ solutions/greedy2_solution : ./solve_greedy2.exe
 	./solve_greedy2.exe matrix solutions/greedy2_solution
 
 ./solve_greedy2.exe:
-	gcc solve_greedy2.c -o solve_greedy2.exe *.png
+	gcc solve_greedy2.c -o solve_greedy2.exe
 
 solutions/my_greedy_solution : ./solve_my_greedy.exe
 	./solve_my_greedy.exe matrix solutions/my_greedy_solution
@@ -44,4 +44,4 @@ solutions/my_greedy_solution : ./solve_my_greedy.exe
 	gcc solve_my_greedy.c -o solve_my_greedy.exe
 
 clean :
-	rm matrix *.exe solutions/*
+	rm matrix *.exe solutions/* *.png
