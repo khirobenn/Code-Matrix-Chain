@@ -1,5 +1,8 @@
-solutions/all: solutions/backtracking_solution.txt solutions/bt_pruned_solution.txt solutions/dp_solution.txt solutions/greedy1_solution.txt solutions/greedy2_solution.txt solutions/my_greedy_solution.txt
+solutions/all: inemurate solutions/backtracking_solution.txt solutions/bt_pruned_solution.txt solutions/dp_solution.txt solutions/greedy1_solution.txt solutions/greedy2_solution.txt solutions/my_greedy_solution.txt
 	python ./compare_algos_plot.py solutions/backtracking_solution.txt solutions/bt_pruned_solution.txt solutions/dp_solution.txt solutions/greedy1_solution.txt solutions/greedy2_solution.txt solutions/my_greedy_solution.txt
+
+inemurate:
+	gcc backtrack_inumerating.c -o backtrack_inumerating.exe
 
 solutions/backtracking_solution.txt: ./solve_backtracking.exe matrix.txt
 	./solve_backtracking.exe matrix.txt solutions/backtracking_solution.txt

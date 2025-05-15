@@ -220,21 +220,28 @@ static void backtrack(int i, list *l)
 int main(int argc, char *argv[])
 {
     if(argc != 2){
-        printf("Usage : %s matrix\n", argv[0]);
+        printf("Usage : %s matrix.txt\n", argv[0]);
         exit(1);
     }
     const char *inFile  = argv[1];
 
     char *greedy[3] = {
-        "greedy1",
-        "greedy2",
-        "my greedy"
+        "greedy1.txt",
+        "greedy2.txt",
+        "my greedy.txt"
     };
 
     FILE *files[3];
-    files[0] = fopen("solutions/greedy1_solution", "r");
-    files[1] = fopen("solutions/greedy2_solution", "r");
-    files[2] = fopen("solutions/my_greedy_solution", "r");
+    files[0] = fopen("solutions/greedy1_solution.txt", "r");
+    files[1] = fopen("solutions/greedy2_solution.txt", "r");
+    files[2] = fopen("solutions/my_greedy_solution.txt", "r");
+
+    for(int i = 0; i<3; i++){
+        if(files[i] == NULL){
+            printf("File : %s no found\n", greedy[i]);
+            exit(1);
+        }
+    }
 
     FILE *fin = fopen(inFile, "r");
     if (!fin) {
