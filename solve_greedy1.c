@@ -17,16 +17,16 @@ static int d[MAXN+1];
 static int n; // number of matrices
 
 // Shrinking 
-void delete_the_iem_element(int tab[], int index, int size, char solution[][100]){
+void delete_the_iem_element(int tab[], int index, int size, char solution[][MAXREPR]){
     for(int i = index; i < size-1; i++){
         tab[i] = tab[i+1];
         sprintf(solution[i], "%s", solution[i+1]);
     }
 }
 
-long long greedy(int nb_of_matrices, int dimensions[], char solution[][100]){
+long long greedy(int nb_of_matrices, int dimensions[], char solution[][MAXREPR]){
     if(nb_of_matrices == 2){
-        char tmp[100];
+        char tmp[MAXREPR];
         sprintf(tmp, "(%s %s)", solution[0], solution[1]);
         sprintf(solution[0], "%s", tmp);
         return dimensions[0] * dimensions[1] * dimensions[2];
@@ -41,7 +41,7 @@ long long greedy(int nb_of_matrices, int dimensions[], char solution[][100]){
             index_to_delete = i;
         } 
     }
-    char tmp[100];
+    char tmp[MAXREPR];
     sprintf(tmp, "(%s %s)", solution[index_to_delete-1], solution[index_to_delete]);
     sprintf(solution[index_to_delete-1], "%s", tmp);
     delete_the_iem_element(dimensions, index_to_delete, nb_of_matrices+1, solution);

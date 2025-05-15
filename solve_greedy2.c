@@ -16,14 +16,14 @@ static char bestTree[MAXREPR];
 static int d[MAXN+1];
 static int n; // number of matrices
 
-long long greedy(int dimensions[], char solution[][100], int start, int end){
+long long greedy(int dimensions[], char solution[][MAXREPR], int start, int end){
     if(end - start < 2){
         // it means there is only one matrix, there is no cost to calculate.
         return 0;
     }
     else if(end - start == 2){
         // it means there is two matrices, so, there is a cost to calculate.
-        char tmp[100];
+        char tmp[MAXREPR];
         sprintf(tmp, "(%s %s)", solution[start], solution[start+1]);
         sprintf(solution[start], "%s", tmp);
         return dimensions[start] * dimensions[start+1] * dimensions[end];
@@ -48,7 +48,7 @@ long long greedy(int dimensions[], char solution[][100], int start, int end){
 
     // We concatenate the two solutions of left and right
     // We give it to solution[start] to have our final solution in solution[0]
-    char tmp[100];
+    char tmp[MAXREPR];
     sprintf(tmp, "(%s %s)", solution[start], solution[index_to_delete]);
     sprintf(solution[start], "%s", tmp);
     return sum_of_greedy+b+c;
