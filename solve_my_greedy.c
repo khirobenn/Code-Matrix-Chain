@@ -16,13 +16,6 @@ static char bestTree[MAXREPR];
 static int d[MAXN+1];
 static int n; // number of matrices
 
-void print_array(long long *ok, int size){
-    for(int i = 0; i<size; i++){
-        printf("%d\t", ok[i]);
-    }
-    printf("\n");
-}
-
 // Shrinking 
 void delete_the_iem_element(int tab[], int index, int size, char solution[][MAXREPR]){
     for(int i = index; i < size-1; i++){
